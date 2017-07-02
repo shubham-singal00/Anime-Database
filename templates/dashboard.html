@@ -1,43 +1,111 @@
 {%  extends "header.html" %}
   {% block body %}
 
-  <p>Hello</p>
+  <p>Hello {{ session['username'] }} :)</p>
 
 <div role="tabpanel">
 
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#basics" aria-controls="basics" role="tab" data-toggle="tab">Animes</a></li>
-    <li role="presentation"><a href="#wdev" aria-controls="wdev" role="tab" data-toggle="tab">Profile</a></li>
+      <li role="presentation"><a href="#wdev" aria-controls="wdev" role="tab" data-toggle="tab">Profile</a></li>
+      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Profile Settings</a></li>
 
   </ul>
 
   <!-- Tab panes -->
 <div class="tab-content">
   <div role="tabpanel" class="tab-pane fade in active" id="basics">
-	<ul>
-        {% from "../querys.py" import  %}
-        {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                {% for message in messages %}
-                  <div class="alert alert-warning alert-dismissible" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    {{message}}
-                  </div>
-                {% endfor %}
-              {% endif %}
-        {% endwith %}
+	<div class="container">
+                <div class="row">
+                    <div id="custom-search-input" style="margin-left:17em;">
+                        <div class="input-group col-md-9">
+                            <form action='/search/' method="post" name="searchBar">
+                                <input type="text" class=" search-query form-control"
+                                       placeholder="Type and press enter to search" name="search"
+                                       value="{{request.form.search}}"/>
+                            </form>
+                        </div>
 
-    </ul>
+                    </div>
+                </div>
+    </div>
+    <br>
+    <div align="left">
+      <form action="/save/" class="form-inline" method="post">
+
+      <ul>
+       <br>
+       {% for anime in animes -%}
+         <li>{{ anime[1] }}</li>
+         <h5>Episodes: {{ anime[2] }}  Genre:{{anime[3]|join(", ")}}  </h5>
+         <ul class="nav nav-pills pull-right">
+               <li ><input name="watched" type="checkbox" {% for use in user %}{% if use[0] == anime[0] %} checked{% endif %}{% endfor %} value="{{ anime[0] }}"  >Watched</li>
+               <li><input name="liked"   type="checkbox" {% for use in user %}{% if use[0] == anime[0] and use[1]==1 %} checked{% endif %}{% endfor %} value="{{anime[0]}}">Liked</li>
+         </ul>
+
+         <br>
+       {%- endfor %}
+      </ul>
+            <br>
+          <input class="btn btn-default" style="width:200px;" type="submit" value="save">
+
+      </form>
+    </div>
   </div>
+        <!-- Profile-->
+    <div role="tabpanel" class="tab-pane fade" id="wdev">
+    <div align="left">
+        <h4>Gernes that you liked </h4>
+        <h5>{{ animeg|join(", ")}}</h5>
+      <form action="/save/" class="form-inline" method="post">
+          <br>
+        <ul>
 
-  <div role="tabpanel" class="tab-pane fade" id="wdev">web dev</div>
+          {% for use in user %}
+           {% for anime in animes -%}
+              {% if use[0] == anime[0] %}
+               <li> {{ anime[1] }}</li>
+               <h5>Episodes: {{ anime[2] }}  Genre:{{anime[3]|join(", ")}}  </h5>
+               <ul class="nav nav-pills pull-right">
+                <li ><input name="watched" type="checkbox" checked value="{{ anime[0] }}"  >Watched</li>
+                <li><input name="liked"   type="checkbox" {% if use[1]==1 %} checked {% endif %} value="{{anime[0]}}">Liked</li>
+               </ul>
+               <br>
+              {% endif %}
+            {%- endfor %}
+         {% endfor %}
+        </ul>
+                <input style="margin-top:40px; margin-left:20px;" class="btn btn-default" type="submit" value="save">
+                <br>
 
-  <div role="tabpanel" class="tab-pane fade" id="dan">Data analysis!#Q$@!#</div>
 
+      </form>
+                <ul class="nav nav-pills pull-left" style="margin-top:40px;">
+                    <li role="presentation" class="active"><a href="../dashboard/#basics">Search Animes</a></li>
+                </ul>
+
+                <ul class="nav nav-pills pull-right" style="margin-top:40px;">
+                     <li role="presentation" class="active"><a href="/add_anime/">+ Add new Animes</a></li>
+                     <li role="presentation" class="active"><a href="/report/">Generate report</a></li>
+                </ul>
+
+    </div>
+
+  </div>
+    <!-- Profile settings-->
+    <div role="tabpanel" class="tab-pane fade" id="settings">
+                <ul class="nav nav-pills pull-left" style="margin-top:40px;">
+                    <li role="presentation" class="active"><a href="../delete/">Delete Account</a></li>
+                </ul>
+
+                <ul class="nav nav-pills pull-right" style="margin-top:40px;">
+                     <li role="presentation" class="active"><a href="/Password/">Change Password</a></li>
+                </ul>
+
+        </div>
 </div>
 
 </div>
 
   {%  endblock %}
-

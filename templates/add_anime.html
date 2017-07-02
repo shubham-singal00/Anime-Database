@@ -1,0 +1,26 @@
+{% extends "header.html" %}
+{% block body %}
+<body>
+	<div class="container">
+		<br>
+		<h4>Fill the from to add new Anime</h4>
+		<br>
+		<form action="" class="form-inline" method="post">
+			<input type="text" class="form-control" style="margin-top:10px;" placeholder = "Anime" name="animename" value="{{request.form.animename}}">
+			<input type="text" class="form-control" style="margin-top:10px;" placeholder = "No. of episodes" name="num" value="{{request.form.num}}">
+			<br>
+                {% for i in range (0,10) %}
+                <input type="text" class="form-control" style="margin-top:10px;" placeholder = "Genre" name="genre {{ i }}">
+	            {% endfor  %}
+            <br>
+            <input class="btn btn-default" style="margin-top:10px;" type="submit" value="SUBMIT">
+        </form>
+        <ul class="nav nav-pills pull-right">
+                        <li role="presentation" class="active"><a href="/dashboard">Back to Dashboard</a>
+                        </li>
+        </ul>
+    </div>
+</body>
+{% endblock %}
+
+

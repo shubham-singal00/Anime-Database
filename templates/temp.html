@@ -1,0 +1,308 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+ @Acesps
+ Sign out
+ Watch 3
+  Star 0
+  Fork 0 NikhilJoshi28/book-sharing-portal
+ Code  Issues 3  Pull requests 0  Projects 0  Wiki  Pulse  Graphs
+Branch: test Find file Copy pathbook-sharing-portal/templates/dashboard.html
+62b2026  5 days ago
+@enigmaeth enigmaeth Added 'Unavailable status', Implemented BookID uniqueness
+2 contributors @enigmaeth @NikhilJoshi28
+RawBlameHistory    
+308 lines (286 sloc)  16.7 KB
+{% extends "header.html" %}
+{% block body %}
+
+
+<div style="margin-top:110px; margin-left:17em; margin-right:17em;">
+
+    <h3 align="left">
+      <span class="label label-danger">
+          Dashboard
+      </span>
+    </h3>
+    <label></label>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" style="margin-right:50px;">
+        <li role="presentation" class="active">
+            <a href="#search" aria-controls="search" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                Search
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#bookshare" aria-controls="bookshare" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                Books Shared
+            </a>
+        <li role="presentation">
+            <a href="#increq" aria-controls="increq" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                Incoming Requests
+            </a>
+        </li>
+
+        <li role="presentation">
+            <a href="#sentreq" aria-controls="sentreq" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                Sent Request
+            </a>
+        </li>
+        <li role="presentation">
+            <a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">
+                <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+                Settings
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <span class="divider">&ensp;</span>
+        <div role="tabpanel" class="tab-pane fade in active" id="search">
+
+            <span class="divider">&ensp;</span>
+            <div role="banner">
+                {% for book in Book_details %}
+                <ul class="list-group">
+                    <li class="list-group-item clearfix">
+                        <h4 class="list-group-item-heading">{{book[0] }}</h4>
+                        <span class="label label-info">Edition:-  {{ book[2] }}</span>&ensp;
+                        <span class="label label-default">{{ book[1] }} </span>
+                        <span class="pull-right button-group" style="font-size:150%">
+                            {% if book[3] == 1  %}
+                            &ensp;
+                            <span class="btn btn-success"><span class="glyphicon glyphicon-info-sign"></span> Available </span>&ensp;
+                            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Request</button>
+                            {% else %}
+                            &ensp;<span class="btn btn-danger"><span class="glyphicon glyphicon-info-sign"></span> Unavailable </span>&ensp;
+                            {% endif %}
+                        </span>
+                        <span class="pull-right label-success" style="font-size:120%; padding:0.3em; border-radius: 3%; background-color:#c6538c; color:white"> &ensp;{{ book[4] }} &ensp;</span>&ensp;
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade" id="bookshare">
+            <div align="center">
+                <!-- ADD Button -->
+                <button style="margin-top:40px; margin-left:20px; width:200px" data-toggle="modal"
+                        data-target="#Addbook" type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    ADD
+                </button>
+                <form action="/booksShared/" method="post" name="bookShared">
+                    <button style="margin-top:40px; margin-left:20px; width:200px" type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        Refresh
+                    </button>
+                </form>
+                <!-- Add button Modal-->
+                <div class="modal fade" id="Addbook" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <form method="post" name="addBookModal">
+                            <div class="modal-content">
+                                <div class="modal-header" align="center">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                            aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabelBook">Book Detailes</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="input-group">
+                                        <span style="float:center; width:150px" class="input-group-addon" id="bookname">Book Name</span>
+                                        <input style="width:400px" type="text" class="form-control" name="bookname"
+                                               value="{{request.form.bookname}}" placeholder="Book Name"
+                                               aria-describedby="sizing-addon2">
+                                    </div>
+                                    <label></label>
+                                    <div class="input-group">
+                                        <span style="float:center; width:150px" class="input-group-addon" id="author">Author</span>
+                                        <input style="width:400px" type="text" class="form-control" name="author"
+                                               value="{{request.form.author}}" placeholder="Author"
+                                               aria-describedby="sizing-addon2">
+                                    </div>
+                                    <label></label>
+                                    <div class="input-group">
+                                        <span style="float:center; width:150px" class="input-group-addon" id="edition">Edition</span>
+                                        <input style="width:400px" type="text" class="form-control" name="edition"
+                                               value="{{request.form.edition}}" placeholder="Edition"
+                                               aria-describedby="sizing-addon2">
+                                    </div>
+                                    <label></label>
+                                    <div class="input-group">
+                                        <span style="float:center; width:150px" class="input-group-addon"
+                                              id="avlstatus">Availability Status</span>
+                                        <input style="width:400px" type="text" class="form-control" name="avlstatus"
+                                               value="1" placeholder="Status" aria-describedby="sizing-addon2">
+                                    </div>
+                                    <label></label>
+                                </div>
+                                <div class="modal-footer">
+                                    <div align="center">
+                                        <button type="submit" class="btn btn-primary">Submit For Share</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:40px; margin-right:50px">
+                <div class="list-group" align="left">
+                    <a href="" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Book Name 0</h4>
+                        <p class="list-group-item-text">Book Details 0</p>
+                    </a>
+                </div>
+
+                <div class="list-group">
+                    <a href="" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Book Name 1</h4>
+                        <p class="list-group-item-text">Book Details 1</p>
+                    </a>
+                </div>
+
+                <div class="list-group">
+                    <a href="" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Book Name 2</h4>
+                        <p class="list-group-item-text">Book Details 2</p>
+                    </a>
+                </div>
+                <div class="list-group" align="left">
+                    <a href="" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Book Name 3</h4>
+                        <p class="list-group-item-text">Book Details 3</p>
+                    </a>
+                </div>
+                <div class="list-group" align="left">
+                    <a href="" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Book Name 4</h4>
+                        <p class="list-group-item-text">Book Details 4</p>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade" id="increq">c..</div>
+
+        <div role="tabpanel" class="tab-pane fade" id="sentreq">c..</div>
+
+        <div role="tabpanel" class="tab-pane fade" id="settings" align="center">
+            <button style="margin-top:60px; width:250px;" data-toggle="modal" data-target="#changePass" type="button"
+                    class="btn btn-warning">
+                Change Password
+            </button>
+
+            <div class="modal fade" id="changePass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" align="center">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabelUpdate">Change Password</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Old Password</span>
+                                <input style="width:400px" type="text" class="form-control" placeholder="old password"
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">New Password</span>
+                                <input style="width:400px" type="password" class="form-control" placeholder="Password"
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Confirm Password</span>
+                                <input style="width:400px" type="password" class="form-control"
+                                       placeholder="Confirm Password" aria-describedby="sizing-addon2">
+                            </div>
+                        </div>
+                        <a href="">
+                            <div class="modal-footer">
+                                <div align="center">
+                                    <button type="button" class="btn btn-primary">Change Password</button>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div align="center">
+                <button style=" margin-top:50px; width:250px;" data-toggle="modal" data-target="#changedetails"
+                        type="button" class="btn btn-warning">
+                    Change Personal Details
+                </button>
+            </div>
+
+            <div class="modal fade" id="changedetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" align="center">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Update Detailes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Name *</span>
+                                <input style="width:400px" type="text" class="form-control" placeholder="Name"
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Phone Number *</span>
+                                <input style="width:400px" type="text" class="form-control" placeholder="Phone No."
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Room Number *</span>
+                                <input style="width:400px" type="text" class="form-control" placeholder="Room No."
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Facebook id*</span>
+                                <input style="width:400px" type="text" class="form-control"
+                                       placeholder="FB id (optional)" aria-describedby="sizing-addon2">
+                            </div>
+                            <label></label>
+                            <div class="input-group">
+                                <span style="float:center; width:150px" class="input-group-addon" id="sizing-addon2">Password</span>
+                                <input style="width:400px" type="text" class="form-control" placeholder="Password"
+                                       aria-describedby="sizing-addon2">
+                            </div>
+                        </div>
+                        <a href="">
+                            <div class="modal-footer">
+                                <div align="center">
+                                    <button type="button" class="btn btn-primary">Update</button>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc. Terms Privacy Security Status Help
